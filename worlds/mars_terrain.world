@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="mars_terrain">
+	<!-- Setting the physics and scene -->  
+    <physics name="default_physics" default="true" type="ode">
+      <max_step_size>0.002</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>500</real_time_update_rate>
+    </physics>
+    <scene>
+      <ambient>0.5 0.5 0.5 1.0</ambient>
+      <shadows>0</shadows>
+    </scene>	
+
+	<gravity>0 0 -3.711</gravity>
+	
+	<!-- Importing mars terrain -->
+	<include>
+		<uri>model://terrain</uri>
+	</include>
+	
+	<!-- Comment to remove the bumpers -->
+	<include>
+		<uri>model://bumpers</uri>
+	</include>
+	
+	<include>
+      <uri>model://sun</uri>
+    </include>
+	
+	<!-- Default camera view setting -->
+	<gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>2.02272 -1.07327 0.474092 0 0.183643 2.8202</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+	
+	
+  </world>
+</sdf>

@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot name="rover" xmlns:xacro="http://www.ros.org/wiki/xacro"> 	
+
+<!-- Macro for motor -->
+<!-- Odd numbered motors are on the left; smallest number being the 
+front one; similar is the case with even numbered motors being on the
+right-->
+
+<xacro:macro name="motors" params="id joint_xyz joint_rpy parent_link">
+	<link name="motor_${id}">
+    <inertial>
+      <origin
+        xyz="0.0259342353576591 6.92370754909466E-06 -0.00015898635132551"
+        rpy="0 0 0" />
+      <mass
+        value="0.0144869013671343" />
+      <inertia
+        ixx="2.93006728406176E-06"
+        ixy="-3.84798244093701E-10"
+        ixz="8.83603178602292E-09"
+        iyy="2.30168032229485E-06"
+        iyz="1.57956449905296E-09"
+        izz="2.27269808658658E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/motor.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/motor_collision.STL" />
+      </geometry>
+    </collision>
+	</link>
+  
+	<joint
+		name="motor_${id}_joint"
+		type="fixed">
+		<origin
+		  xyz="${joint_xyz}"
+		  rpy="${joint_rpy}" />
+		<parent
+		  link="${parent_link}" />
+		<child
+		  link="motor_${id}" />
+	</joint>
+	
+	<gazebo reference="motor_${id}">
+		<material>Gazebo/DarkGrey</material>
+    </gazebo>
+</xacro:macro>
+
+<!-- Macro for wheels -->
+<!-- Odd numbered wheels are on the left; smallest number being the 
+front one; similar is the case with even numbered wheels being on the
+right-->
+
+<xacro:macro name="wheels" params="id joint_xyz joint_rpy">
+
+  <link name="wheel_${id}">
+    <inertial>
+      <origin
+        xyz="0.019283 8.6633E-06 -1.928E-09"
+        rpy="0 0 0" />
+      <mass
+        value="0.033378" />
+      <inertia
+        ixx="2.841E-05"
+        ixy="-4.7026E-09"
+        ixz="1.3376E-12"
+        iyy="1.7204E-05"
+        iyz="6.8395E-13"
+        izz="1.7202E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/wheel_collision.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint
+    name="wheel_${id}_joint"
+    type="continuous">
+    <origin
+      xyz="0.028765 0 0"
+      rpy="-0.054444 0 0" />
+    <parent
+      link="motor_${id}" />
+    <child
+      link="wheel_${id}" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  
+  
+  <gazebo reference="wheel_${id}">
+		<material>Gazebo/Grey</material>
+    </gazebo>
+	
+   <!-- Transmission -->
+   <transmission name="transmitter">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="wheel_${id}_joint">
+		  <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="wheel_actuator">
+		  <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		  <mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>
+
+</xacro:macro>
+	
+  <link name="base_link">
+    <inertial>
+      <origin
+        xyz="-2.111E-18 1.5741E-17 0.0155"
+        rpy="0 0 0" />
+      <mass
+        value="0.49112" />
+      <inertia
+        ixx="0.0010415"
+        ixy="5.1756E-20"
+        ixz="1.0477E-21"
+        iyy="0.0012245"
+        iyz="6.8861E-20"
+        izz="0.0022536" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/base_link_collision.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <gazebo reference="base_link">
+	<material>Gazebo/FlatBlack</material>
+  </gazebo>
+  
+  <link name="left_leg">
+    <inertial>
+      <origin
+        xyz="-0.0110049037090681 -0.0332441365416239 0.00599835461104921"
+        rpy="0 0 0" />
+      <mass
+        value="0.0359381970215988" />
+      <inertia
+        ixx="2.2688382854995E-05"
+        ixy="-2.10643901201987E-05"
+        ixz="7.62089263997965E-09"
+        iyy="0.000207801306021132"
+        iyz="-1.53877494070991E-09"
+        izz="0.000229033040658336" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/left_leg.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/left_leg.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint
+    name="left_leg_joint"
+    type="fixed">
+    <origin
+      xyz="0.0029222 0.08418 0.018288"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_leg" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  
+  <gazebo reference="left_leg">
+	<material>Gazebo/Blue</material>
+   </gazebo>
+  
+  <link name="left_sub_leg">
+    <inertial>
+      <origin
+        xyz="0.0103494541694386 -0.0113370216313985 -0.00600777793482314"
+        rpy="0 0 0" />
+      <mass
+        value="0.0230678067855023" />
+      <inertia
+        ixx="2.97892069005275E-06"
+        ixy="-3.78936868364967E-08"
+        ixz="1.41396587426279E-08"
+        iyy="6.50250833265965E-05"
+        iyz="-3.35662430222893E-09"
+        izz="6.70643757661505E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/left_sub_leg.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/left_sub_leg.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <gazebo reference="left_sub_leg">
+	<material>Gazebo/Red</material>
+   </gazebo>
+  
+  <joint
+    name="left_sub_leg_joint"
+    type="revolute">
+    <origin
+      xyz="0.11752 -0.058986 0"
+      rpy="0 0 0" />
+    <parent
+      link="left_leg" />
+    <child
+      link="left_sub_leg" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.5708"
+      upper="1.5708"
+      effort="50"
+      velocity="100" />
+  </joint>
+   
+   <link name="right_leg">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/right_leg.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/right_leg.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+   <joint
+    name="right_leg_joint"
+    type="fixed">
+    <origin
+      xyz="0.0029222 -0.07218 0.018288"
+      rpy="1.5708 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_leg" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  
+   <gazebo reference="right_leg">
+	<material>Gazebo/Blue</material>
+   </gazebo>
+  
+  <link name="right_sub_leg">
+    <inertial>
+      <origin
+        xyz="0.0103494541694387 -0.0113370216313985 0.00599222206517686"
+        rpy="0 0 0" />
+      <mass
+        value="0.0230678067855023" />
+      <inertia
+        ixx="2.97892069005275E-06"
+        ixy="-3.7893686836509E-08"
+        ixz="1.41396587426269E-08"
+        iyy="6.50250833265963E-05"
+        iyz="-3.35662430222885E-09"
+        izz="6.70643757661504E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/right_sub_leg.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rover/meshes/right_sub_leg.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint
+    name="right_sub_leg_joint"
+    type="revolute">
+    <origin
+      xyz="0.11752 -0.058986 0.012"
+      rpy="0 0 0" />
+    <parent
+      link="right_leg" />
+    <child
+      link="right_sub_leg" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.5708"
+      upper="1.5708"
+      effort="50"
+      velocity="100" />
+  </joint>
+  
+  <gazebo reference="right_sub_leg">
+	<material>Gazebo/Red</material>
+   </gazebo>
+   
+  <xacro:motors id="1" joint_xyz="0.089107 -0.05213 0.01" joint_rpy="1.5708 1.5708 0" parent_link="left_sub_leg"/>
+  <xacro:motors id="3" joint_xyz="-0.071293 -0.05213 0.01" joint_rpy="1.5708 1.5708 0" parent_link="left_sub_leg"/>
+  <xacro:motors id="5" joint_xyz="-0.12025 -0.11112 0.021" joint_rpy="1.5708 1.5708 0" parent_link="left_leg"/>
+  <xacro:motors id="2" joint_xyz="0.089107 -0.05213 -0.01" joint_rpy="1.5708 -1.5708 0" parent_link="right_sub_leg"/>
+  <xacro:motors id="4" joint_xyz="-0.071293 -0.05213 -0.01" joint_rpy="1.5708 -1.5708 0" parent_link="right_sub_leg"/>
+  <xacro:motors id="6" joint_xyz="-0.12025 -0.11112 -0.01" joint_rpy="1.5708 -1.5708 0" parent_link="right_leg"/>
+  
+  <xacro:wheels id="1" joint_xyz="0.028765 0 0" joint_rpy="-0.054 0 0"/>
+  <xacro:wheels id="3" joint_xyz="0.028765 0 0" joint_rpy="-0.054 0 0"/>
+  <xacro:wheels id="5" joint_xyz="0.028765 0 0" joint_rpy="-0.054 0 0"/>
+  <xacro:wheels id="2" joint_xyz="0.028765 0 0" joint_rpy="0.054 0 0"/>
+  <xacro:wheels id="4" joint_xyz="0.028765 0 0" joint_rpy="0.054 0 0"/>
+  <xacro:wheels id="6" joint_xyz="0.028765 0 0" joint_rpy="0.054 0 0"/>  
+  
+  <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+		  <robotNamespace>/rover</robotNamespace>
+      </plugin>
+  </gazebo>	 
+  
+</robot>

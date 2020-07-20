@@ -1,0 +1,30 @@
+<package>
+  <name>rover</name>
+  <version>1.0.0</version>
+
+  <description>A package containing visual elements for simulating a rover</description>
+  <author email="mehta.mayank860@gmail.com">Mayank N. Mehta</author>
+
+  <maintainer email="mehta.mayank860@gmail.com">Mayank N. Mehta</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+  <run_depend>joint_state_publisher</run_depend>
+  <run_depend>joint_state_publisher_gui</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>joint_state_controller</run_depend>
+  <run_depend>position_controllers</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rviz</run_depend>
+  <run_depend>xacro</run_depend>
+  
+  <export>
+	<gazebo_ros gazebo_model_path="${prefix}/models" />
+	<gazebo_ros gazebo_media_path="${prefix}"/>
+  </export>
+
+</package>
